@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAdminAuth } from '../../context/AdminAuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import  axios  from 'axios'
 
 const Navbar = () => {
@@ -26,7 +26,11 @@ const Navbar = () => {
   return (
     <nav className="flex items-center justify-between bg-gray-800 text-white px-6 py-4 shadow-md">
       <div className="text-3xl font-medium">
-        <h1>Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold">
+  <Link to="/admin/dashboard" className=" hover:underline">
+    Admin Dashboard
+  </Link>
+</h1>
       </div>
       <button
         onClick={handleLogout}

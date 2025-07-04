@@ -7,11 +7,11 @@ import { useAuth } from '../../context/AuthContext'
 
 const LoginComponent = () => {
      const navigate = useNavigate()
-     const { user } = useAuth()
+    
     const [email,setEmail] = useState("")
     const [password,setPassword] = useState("")
     const [error,setError] = useState("")
-    const {login : loginUser} = useAuth()
+    const {user, login : loginUser} = useAuth()
 
     const handleSubmit = async(e)=>{
         e.preventDefault()

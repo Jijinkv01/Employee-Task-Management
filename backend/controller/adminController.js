@@ -45,8 +45,8 @@ const getAllUsers = async(req,res)=>{
 
     const query = {
       $or: [
-        { username: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } }
+        { username: { $regex: '^' + search, $options: 'i' } },
+        { email: { $regex: '^' + search, $options: 'i' } }
       ]
     }
 
@@ -144,4 +144,114 @@ const createTask = async(req,res)=>{
     }
 }
 
-module.exports = {login, logout, getAllUsers, deleteUser, updateUser, createUser, getEmployeeNames, createTask}
+const fetchTasks = async(req,res)=>{
+    try {
+        const tasks = await Task.find().populate('assignedTo', 'username email').sort({ createdAt: -1 }) // only populate username & email
+    res.status(200).json({ success: true, tasks })
+    } catch (error) {
+        console.error("Error in fetchTasks:", error);
+        res.status(500).json({ success: false, message: 'Failed to fetch tasks', error })
+    }
+}
+
+const deleteTask = async(req,res)=>{
+    try {
+        const taskId = req.params.id;
+        await Task.findByIdAndDelete(taskId);
+        res.status(200).json({ success: true, message: "Task deleted successfully" });
+
+    } catch (error) {
+        console.error("Delete error:", error);
+    res.status(500).json({ success: false, message: "Failed to delete task" });
+
+    }
+}
+
+const dashboardCounts = async(req,res)=>{
+    try {
+        const totalUsers = await User.countDocuments()
+    const totalTasks = await Task.countDocuments()
+    const pendingTasks = await Task.countDocuments({ status: 'Pending' })
+    const finishedTasks = await Task.countDocuments({ status: 'Finished' })
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalUsers,
+        totalTasks,
+        pendingTasks,
+        finishedTasks
+      }
+    })
+    } catch (error) {
+        console.error(error)
+    res.status(500).json({ success: false, message: 'Failed to fetch dashboard counts' })
+    }
+}
+
+const userRes = async(req,res)=>{
+    try {
+        const user = await User.findById(req.params.id);
+        res.json({ success: true, user });
+    } catch (error) {
+         res.status(500).json({ success: false, message: "User fetch failed" });
+    }
+}
+
+const taskRes = async(req,res)=>{
+    try {
+        const tasks = await Task.find({ assignedTo: req.params.id });
+    res.json({ success: true, tasks });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to fetch tasks" });
+    }
+}
+
+const updateTaskStatus = async (req, res) => {
+    try {
+        const { taskId } = req.params;
+    const { approvalStatus } = req.body;
+
+    const updateFields = {
+      approvalStatus,
+      isCommited: approvalStatus === "Approved",
+    };
+
+    // If approved, also mark the task as finished
+    if (approvalStatus === "Approved") {
+      updateFields.status = "Finished";
+    }
+
+    const updatedTask = await Task.findByIdAndUpdate(
+      taskId,
+      updateFields,
+      { new: true }
+    );
+
+    if (!updatedTask) {
+      return res.status(404).json({ success: false, message: "Task not found" });
+    }
+
+    res.status(200).json({ success: true, task: updatedTask });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal server error" })
+    }
+}
+
+
+
+module.exports = {login, 
+    logout, 
+    getAllUsers, 
+    deleteUser, 
+    updateUser, 
+    createUser, 
+    getEmployeeNames, 
+    createTask, 
+    fetchTasks, 
+    deleteTask, 
+    dashboardCounts,
+    userRes,
+    taskRes,
+    updateTaskStatus
+}

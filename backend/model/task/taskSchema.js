@@ -11,12 +11,25 @@ const taskSchema  = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'finished'],
-    default: 'pending'
+    enum: ['Pending', 'Finished'],
+    default: 'Pending'
+  },
+  commitMessage: {
+    type: String,
+    default: ""
+  },
+  isCommited: {
+    type: Boolean,
+    default: false
+  },
+  approvalStatus: {
+    type: String,
+    enum: ["Pending", "Approved", "Rejected"],
+    default: "Pending"
   },
   assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
     required: true
   },
 }, {timestamps: true});

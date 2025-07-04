@@ -26,7 +26,7 @@ const Navbar = () => {
   return (
     <nav className="flex items-center justify-between bg-gray-800 text-white px-6 py-4 shadow-md">
       <div className="text-3xl font-medium">
-        <h1>Welcome {user.username}!</h1>
+        <h1>Welcome {user.username} !</h1>
       </div>
       <button
         onClick={handleLogout}

@@ -8,14 +8,19 @@ require("dotenv").config();
 
 
 
+const PORT = process.env.PORT || 5000;
+const corsOptions = {
+  origin: process.env.CLIENT_URL, 
+  credentials: true,              
+};
 
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(express.json())
 
 app.use("/",userRouter)
 app.use("/admin",adminRouter)
 
 connectDB()
-app.listen(3000,()=>{
-    console.log("sever is running..")
+app.listen(PORT,()=>{
+    console.log(`Server running on port ${PORT}`)
 })

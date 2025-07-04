@@ -1,8 +1,10 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { useUserList } from '../../context/UserListContext'
+import { useNavigate } from 'react-router-dom'
 
 const EmployeeList = () => {
+  const navigate = useNavigate()
   const { users, deleteUser, editUser, createUser, fetchUsers, search, setSearch, page, setPage, totalPages } = useUserList()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editedUsername, setEditedUsername] = useState("")
@@ -49,12 +51,14 @@ const EmployeeList = () => {
     setSelectedUser(null)
   }
 
-  fetchUsers()
+  useEffect(() => {
+  fetchUsers();
+}, []);
 
 
   return (
-    <div className="p-6 bg-gray-900 text-white min-h-screen">
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-6 bg-gray-900 text-white ">
+      <div className="flex justify-between items-center mb-4 ">
         <h2 className="text-2xl font-bold">Employee Management</h2>
         <div>
           <button onClick={()=>setIsCreateModalOpen(true)} className='bg-green-600 text-white text-xl rounded-lg p-1 cursor-pointer hover:bg-green-800 font-bold'>Create New Employee</button>
@@ -125,6 +129,7 @@ const EmployeeList = () => {
             <th className="p-3">Employee Name</th>
             <th className="p-3">Email</th>
             <th className="p-3">Actions</th>
+            <th className="p-3">View More</th>
           </tr>
         </thead>
         <tbody>
@@ -145,6 +150,14 @@ const EmployeeList = () => {
                     className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
                   >
                     Delete
+                  </button>
+                </td>
+                <td>
+                  <button
+                   onClick={() => navigate(`/admin/taskDetails/${user._id}`)}
+                    className="bg-gray-300 px-3 py-1 rounded text-gray-700 cursor-pointer hover:bg-gray-100"
+                  >
+                    View Task Details
                   </button>
                 </td>
               </tr>

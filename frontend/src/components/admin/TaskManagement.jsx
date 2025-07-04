@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTask } from '../../context/TaskContext';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 
 const TaskManagement = () => {
-    const { users, task, setTask, createTask } = useTask();
+    const { users, task, setTask, createTask, fetchTasks, tasks, loading, error, deleteTask  } = useTask();
 
    const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -16,6 +16,10 @@ const TaskManagement = () => {
     createTask()
     setIsModalOpen(false)
   }
+
+  useEffect(() => {
+    fetchTasks()
+  }, [])
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -89,6 +93,55 @@ const TaskManagement = () => {
           </div>
         </div>
       )}
+      <div className="mt-10">
+  <h2 className="text-2xl font-bold mb-6">Recently Added Tasks</h2>
+
+  {loading ? (
+    <p className="text-gray-400">Loading tasks...</p>
+  ) : error ? (
+    <p className="text-red-400">{error}</p>
+  ) : tasks.length === 0 ? (
+    <p className="text-gray-400">No tasks available.</p>
+  ) : (
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-gray-800 rounded-lg overflow-hidden">
+        <thead>
+          <tr className="text-left border-b border-gray-700">
+            <th className="px-4 py-3">Sl. No</th>
+            <th className="px-4 py-3">Task Name</th>
+            <th className="px-4 py-3">Description</th>
+            <th className="px-4 py-3">Assigned To</th>
+            <th className="px-4 py-3">Status</th>
+            <th className="px-4 py-3">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task, index) => (
+            <tr
+              key={task._id}
+              className="border-t border-gray-700 hover:bg-gray-700 transition"
+            >
+              <td className="px-4 py-3">{index + 1}</td>
+              <td className="px-4 py-3">{task.name}</td>
+              <td className="px-4 py-3">{task.description}</td>
+              <td className="px-4 py-3">{task.assignedTo?.username || 'Unknown'}</td>
+              <td className={`px-4 py-3 font-semibold ${task.status?.toLowerCase() === 'finished' ? 'text-green-500' : 'text-red-500'}`}>
+                {task.status || 'Pending'}
+              </td>
+              <td className='pl-4'>
+                <button  onClick={()=>{
+                  const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+                  if (confirmDelete) {
+                  deleteTask(task._id);}
+                }} className='bg-red-500 rounded-lg px-2 cursor-pointer'>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</div>
     </div>
   )
 }

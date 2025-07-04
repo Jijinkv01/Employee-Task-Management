@@ -3,11 +3,12 @@ import { Routes, Route } from 'react-router-dom'
 import Register from './pages/user/Register'
 import Login from './pages/user/Login'
 import Home from './pages/user/Home'
+import TaskDetails from './pages/admin/TaskDetails'
 import PrivateRoute from './routes/PrivateRoute'
-
 import LoginAdmin from './pages/admin/LoginAdmin'
 import Dashboard from './pages/admin/Dashboard'
 import AdminPrivateRoute from './routes/AdminPrivateRoute'
+
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
       <Route path='/' element={<PrivateRoute> <Home /> </PrivateRoute>}/>
       <Route path='/admin/login' element={ <LoginAdmin />}/>
       <Route path='/admin/dashboard' element={<AdminPrivateRoute> <Dashboard /> </AdminPrivateRoute> }/>
+      <Route path='/admin/taskDetails/:id' element={<TaskDetails />  }/>
      
     </Routes>
   )

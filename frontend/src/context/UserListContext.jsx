@@ -9,6 +9,8 @@ export const UserListProvider = ({ children }) => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
+
+
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("adminToken")
@@ -55,6 +57,7 @@ const createUser = async(email,username,password)=>{
       headers: { Authorization: `Bearer ${token}` }
     })
     alert(res.data.message)
+    fetchUsers()
   } catch (error) {
     console.error("Create user error:", error);
     alert(error.response?.data?.message || "Error creating user");
